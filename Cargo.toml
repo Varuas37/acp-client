@@ -1,0 +1,39 @@
+[package]
+name = "acp-client"
+version = "0.2.0"
+edition = "2021"
+description = "Generic ACP client for AI agents with OpenAI-compatible API"
+license = "MIT"
+
+[dependencies]
+# ACP protocol
+agent-client-protocol = "0.9"
+
+# Async runtime
+tokio = { version = "1", features = ["full", "process", "sync", "time"] }
+tokio-util = { version = "0.7", features = ["compat"] }
+async-trait = "0.1"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# HTTP server for OpenAI-compatible API
+axum = { version = "0.7", features = ["json"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors"] }
+
+# Utils
+uuid = { version = "1", features = ["v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+regex = "1"
+
+[[bin]]
+name = "acp-server"
+path = "src/bin/server.rs"
+
+[dev-dependencies]
+tokio-test = "0.4"
