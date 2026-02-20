@@ -10,6 +10,7 @@ dependencies = [
  "async-trait",
  "axum",
  "chrono",
+ "once_cell",
  "regex",
  "serde",
  "serde_json",
