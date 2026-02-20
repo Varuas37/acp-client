@@ -117,15 +117,18 @@ impl AcpConnection {
             tokio::time::sleep(init_delay).await;
         }
 
-        // Send prompt
+        // Send prompt with timeout
         info!("[ACP] Sending prompt ({} chars)...", prompt.len());
         let content = vec![acp::ContentBlock::Text(acp::TextContent::new(prompt.to_string()))];
         let prompt_request = acp::PromptRequest::new(session_id, content);
 
         let prompt_start = std::time::Instant::now();
-        let prompt_response = conn.prompt(prompt_request)
-            .await
-            .map_err(|e| Error::protocol(format!("Prompt failed: {:?}", e)))?;
+        let prompt_response = tokio::time::timeout(
+            config.timeout,
+            conn.prompt(prompt_request)
+        ).await
+        .map_err(|_| Error::Timeout)?
+        .map_err(|e| Error::protocol(format!("Prompt failed: {:?}", e)))?;
 
         info!("[ACP] Prompt completed in {:?}: {:?}", prompt_start.elapsed(), prompt_response.stop_reason);
 
